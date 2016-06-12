@@ -71,10 +71,10 @@ export default class CircularTimer extends Component {
                 <TouchableOpacity onPress={() => this.timer.toggle()} activeOpacity={1.0}>
                     <View>
                         <Progress.Circle
-                            size={240}
+                            size={285}
                             progress={this.state.progress}
-                            unfilledColor={'rgba(0, 122, 255, 1)'}
-                            color={'#f5fcff'}
+                            unfilledColor={'#DDCECD'}
+                            color={'#fff'}
                             thickness={10}
                             showsText={true}
                             formatText={(progress) => this.formatProgress(progress)}
@@ -95,23 +95,32 @@ export default class CircularTimer extends Component {
     }
 }
 
+// color
+// #5db7e8
+// #ea5432
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f5fcff',
+        backgroundColor: '#19647E',
     },
     timerText: {
-        color: 'rgba(0, 122, 255, 1)',
+        color: '#DDCECD',
+        fontFamily: 'avenir',
+        fontSize: 67,
+        textShadowColor: '#fff',
+        textShadowOffset: {width: 1, height: 1},
+        textShadowRadius: 1
     },
     reset: {
-        color: 'rgba(0, 122, 255, 1)',
+        color: 'rgba(255, 255, 255, 1)',
         fontSize: 32,
-        marginTop: 16,
+        marginTop: 100,
         padding: 8,
-        borderWidth: 2,
-        borderColor: 'rgba(0, 122, 255, 1)',
-        borderRadius: 3,
+        backgroundColor: '#28AFB0',
+        fontFamily: 'avenir',
+        width: 100
     }
 })
