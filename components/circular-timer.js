@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import * as Progress from 'react-native-progress'
 import NotificatableTimer from '../domain/notification-timer'
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 const FPS = 60
 function zeroPadding (n) {
@@ -54,6 +55,7 @@ export default class CircularTimer extends Component {
         })
 
         this.state = {
+            running: false,
             progress: 0,
         }
     }
@@ -65,62 +67,122 @@ export default class CircularTimer extends Component {
         return zeroPadding(remainingMinutes) + ':' + zeroPadding(remainingSeconds)
     }
 
+    get icon() {
+        return this.state.running ? 'play': 'pause'
+    }
+
+    get btnText() {
+        return this.state.running ? 'stop': 'start'
+    }
+
+    get circleColor() {
+        return this.state.running ? '#5db7e8' : '#ea5432'
+    }
+
+    get btnColor() {
+        return this.state.running ? '#ea5432' : '#5db7e8'
+    }
+
+    //TODO runnningがtrueのときはresetボタンを押せないように
+    get resetBtnColor() {
+        return this.state.running ? '#aaa' : '#aaa'
+    }
+
+    get timerTextColor() {
+        return this.state.running ? '#222' : '#777'
+    }
+
     render () {
         return (
             <View style={styles.container}>
-                <TouchableOpacity onPress={() => this.timer.toggle()} activeOpacity={1.0}>
-                    <View>
-                        <Progress.Circle
-                            size={285}
-                            progress={this.state.progress}
-                            unfilledColor={'#DDCECD'}
-                            color={'#fff'}
-                            thickness={10}
-                            showsText={true}
-                            formatText={(progress) => this.formatProgress(progress)}
-                            textStyle={styles.timerText}
-                        />
+                <View style={styles.timerView}>
+                    <Text style={styles.icon}><Icon name={this.icon} size={40} color={this.timerTextColor} /></Text>
+                    <Progress.Circle
+                        size={285}
+                        progress={this.state.progress}
+                        unfilledColor={this.circleColor}
+                        color={'#eee'}
+                        thickness={10}
+                        showsText={true}
+                        formatText={(progress) => this.formatProgress(progress)}
+                        textStyle={[styles.timerText, {color: this.timerTextColor}]}
+                    />
+                </View>
+                <View style={styles.buttons}>
+                    <View style={styles.button}>
+                        <TouchableHighlight onPress={() => {
+                            this.timer.reset()
+                            this.setState({
+                                progress: 0
+                            })
+                        }}>
+                            <Text style={[styles.reset, {backgroundColor: this.resetBtnColor}]}>Reset</Text>
+                        </TouchableHighlight>
                     </View>
-                </TouchableOpacity>
-                <TouchableHighlight onPress={() => {
-                    this.timer.reset()
-                    this.setState({
-                        progress: 0
-                    })
-                }}>
-                    <Text style={styles.reset}>Reset</Text>
-                </TouchableHighlight>
+                    <View style={styles.button}>
+                        <TouchableHighlight onPress={() => {
+                            this.timer.toggle()
+                            this.setState({
+                                running: !this.state.running
+                            })
+                        }}>
+                        <Text style={[styles.stop, {backgroundColor: this.btnColor}]}>{this.btnText}</Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
             </View>
         )
     }
 }
 
-// color
-// #5db7e8
-// #ea5432
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'stretch',
+        backgroundColor: '#eee',
+    },
+    timerView: {
         justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#19647E',
+        flex: 5,
+        alignSelf: 'center',
+    },
+    icon: {
+        top: 85,
+        alignSelf: 'center',
+        textAlign: 'center',
     },
     timerText: {
-        color: '#DDCECD',
+        top: 10,
         fontFamily: 'avenir',
-        fontSize: 67,
-        textShadowColor: '#fff',
-        textShadowOffset: {width: 1, height: 1},
-        textShadowRadius: 1
+        fontSize: 70,
+    },
+    buttons: {
+        flex: 1,
+        flexDirection: 'row',
+    },
+    button: {
+        alignItems: 'stretch',
+        justifyContent: 'flex-end',
+        flex: 1,
+    },
+    stop: {
+        height: 100,
+        paddingTop: 20,
+        textAlign: 'center',
+        color: '#eee',
+        fontSize: 40,
+        fontFamily: 'avenir',
+        fontWeight: 'bold',
     },
     reset: {
-        color: 'rgba(255, 255, 255, 1)',
-        fontSize: 32,
-        marginTop: 100,
-        padding: 8,
-        backgroundColor: '#28AFB0',
+        height: 100,
+        paddingTop: 20,
+        textAlign: 'center',
+        color: '#eee',
+        fontSize: 40,
         fontFamily: 'avenir',
-        width: 100
+        fontWeight: 'bold'
     }
 })
